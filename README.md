@@ -4,6 +4,13 @@
 
 This application is a relatively standard Rails app running against a PostgreSQL DB (for JSON storage).
 
+
+Sample data for the two formats is included as `payload1.json` and `payload2.json`. This lets us test with `curl` as follows (from app root):
+
+```
+curl -H "Content-Type: application/json" -d @`pwd`/payload1.json localhost:3000/reservations
+```
+
 # Notes/Caveats
 
 * `Reservation` models attributes common to both formats. Format-specific data is stored in individual reservations as a JSON object called `misc`.
