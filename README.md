@@ -1,5 +1,7 @@
 # README
 
+This is a demo web application that implements an endpoint that accepts reservation requests in different JSON formats for storage.
+
 ## Setup
 
 This application is a relatively standard Rails app running against a PostgreSQL DB (for JSON storage). This needs PostgreSQL to be running on `localhost:5432`, with a user called `postgres` and an empty password.
@@ -14,6 +16,7 @@ rails db:setup
 rails server
 ```
 
+This sets up the endpoint at `http://localhost:3000/reservations`.
 
 ## Testing
 
@@ -41,16 +44,18 @@ rspec -fd
 
 ## Notes/Caveats
 
+* This implementation models and stores `ReservationRequest` separately from the actual `Reservation`. This provides the flexibility to reprocess requests later, should processing requirements change or implementation issues be found.
+
+* Reservation requests are accepted and queued for asynchronous processing, so the endpoint is lightweight and any complex processing does not affect performance. The only validation done at the `/reservations` endpoint is for validity of the JSON payload. Acceptance of a request does not guarantee that it is processed.
+
 * `Reservation` models attributes common to both formats. Format-specific data is stored in individual reservations as a JSON object called `misc`.
 
 * Guest records are automatically created if they don't exist. Guest lookup is done by email.
 
-* Guest data included in the original request payload is embedded as a JSON object in individual `Reservation` records. This is distinct from data in the corresponding `Guest` record. `Guest` objects are created once, and requests may have different data for the same referenced guest. For one thing, the two formats have different phone number structures.
+* Guest data from the request is embedded as a JSON object in individual `Reservation` records for easy direct access. `Guest` objects are created once, but reservations may have different data for the referenced guest. For one thing, the two formats have different phone number structures.
 
-* This implementation models and stores `ReservationRequest` separately from the actual `Reservation`. This allows us to reprocess raw requests later, should the processing code change.
+* This implementation does not enforce non-overlapping reservation date ranges for a guest. It does however enforce uniqueness on `(guest_id, start_date, end_date)`, so repeating a request will fail to create another reservation. Error reporting beyond logging is not implemented.
 
-* Reservation requests are accepted and queued for asynchronous processing. The only validation done at the `/reservations` endpoint is for validity of the JSON payload. Acceptance of a request does not guarantee that it is processed.
+* As this is a proof of concept, DB updates are intentionally called with `!`, so errors are immediately obvious and can be dealt with.
 
-* This implementation does not enforce non-overlapping that reservation date ranges for a guest as it is not in scope. It does however enforce uniqueness on `(guest_id, start_date, end_date)`, so repeating a request will fail to create another reservation.
-
-* Modelling properties is not in scope.
+* Modelling exclusivity of reservations for properties would be a nice challenge, but not in scope.
