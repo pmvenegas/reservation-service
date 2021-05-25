@@ -7,6 +7,8 @@ class CreateGuests < ActiveRecord::Migration[6.0]
 
       t.string :phone_numbers,      array: true
 
+      t.index :email, unique: true
+
       t.timestamps
     end
   end

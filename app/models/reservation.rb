@@ -1,6 +1,6 @@
 class Reservation < ApplicationRecord
   belongs_to :guest
-  has_one :reservation_request
+  belongs_to :reservation_request
 
   validates_presence_of :guest
   validates_presence_of :reservation_request
