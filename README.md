@@ -4,7 +4,7 @@ This is a demo web application that implements an endpoint that accepts reservat
 
 ## Setup
 
-This application is a relatively standard Rails API app running a PostgreSQL DB (for JSON storage). It needs PostgreSQL to be running on `localhost:5432`, with a user called `postgres` and an empty password.
+This application is a relatively standard Rails API app running against a PostgreSQL database (for JSON storage). It needs PostgreSQL to be running on `localhost:5432`, with a user called `postgres` and an empty password.
 
 To set up and run (in development mode):
 
